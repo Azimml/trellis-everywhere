@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+*.pt
+*.safetensors
+*.bin
+web/model/
+web/model_*/
+web/*.json
+!web/package.json
+results/
+hessians/
+*.log
+.DS_Store
