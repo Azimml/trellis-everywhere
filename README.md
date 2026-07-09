@@ -1,6 +1,6 @@
 # Trellis Everywhere
 
-**The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU, on a 4 GB laptop GPU.**
+**The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU, on a 4 GB GPU.**
 
 Trellis-coded quantization (TCQ) — the method behind [QTIP](https://arxiv.org/abs/2406.11235) (NeurIPS 2024) and [EXL3](https://github.com/turboderp-org/exllamav3) — is the current quality frontier for low-bit LLM weights, beating scalar quantization (GPTQ / AWQ / GGUF) at equal bitrate. But every TCQ decoder shipped to date is **CUDA-only**, which locks this quality tier to NVIDIA data-center and desktop GPUs.
 
@@ -27,7 +27,7 @@ The K=2 trellis quantizer hits **MSE 0.0739** on unit-Gaussian weights vs. the Q
 
 Three model scales run a **full forward pass through the exact shipping WGSL shaders**, verified end-to-end and generating coherent, factually-correct text:
 
-| Model | Layers | 3-bit weights | Peak VRAM (measured, Chrome / RTX 3050 Ti) | Output on "The capital of France is" |
+| Model | Layers | 3-bit weights | Peak VRAM (measured, Chrome / RTX 3050) | Output on "The capital of France is" |
 |---|---|---|---|---|
 | **Qwen3-8B** | 36 | 2.9 GB | **fits 4 GB** | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin."* |
 | **Qwen3-1.7B** | 28 | 0.63 GB | **~1.0 GB** | *"…Paris. Is this statement true or false?"* |
@@ -40,7 +40,7 @@ Verified at four independent levels:
 - **Tokenizer** — JS byte-level BPE, **bit-exact** vs HuggingFace.
 - **Every WGSL kernel** — decode-matmul, RMSNorm, RoPE, GQA-attention, SwiGLU, per-head QK-norm (Qwen3) — compiled and run on real GPU hardware, matching NumPy to `<1e-6`.
 - **Full packed 3-bit model** — 135M logits **identical to PyTorch** (top-5 exact); the 8B and 1.7B run all layers through the same shaders and generate correct text.
-- **On a real 4 GB card** — the full 8B generation was run in Chrome on a laptop **RTX 3050 Ti (4 GB)** and produced the output above without running out of memory.
+- **On a real 4 GB card** — the full 8B generation was run in Chrome on a laptop **RTX 3050** and produced the output above without running out of memory.
 
 The full pipeline — QK-norm, sharded streaming load, quantized-embedding decode, the IP-folded decode-matmul — is identical across all three sizes. The 8B is not a special case; it is the same code at scale.
 
