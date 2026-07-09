@@ -50,9 +50,9 @@ The full pipeline — QK-norm, sharded streaming load, quantized-embedding decod
 
 Packed, browser-ready 3-bit weights are published on the Hugging Face Hub:
 
-- `Azimml/Qwen3-8B-trellis-3bit-webgpu`
-- `Azimml/Qwen3-1.7B-trellis-3bit-webgpu`
-- `Azimml/SmolLM2-135M-trellis-3bit-webgpu`
+- [`Azimml/Qwen3-8B-trellis-3bit-webgpu`](https://huggingface.co/Azimml/Qwen3-8B-trellis-3bit-webgpu)
+- [`Azimml/Qwen3-1.7B-trellis-3bit-webgpu`](https://huggingface.co/Azimml/Qwen3-1.7B-trellis-3bit-webgpu)
+- [`Azimml/SmolLM2-135M-trellis-3bit-webgpu`](https://huggingface.co/Azimml/SmolLM2-135M-trellis-3bit-webgpu)
 
 Each is a quantized derivative of the corresponding base model (see licenses below).
 
