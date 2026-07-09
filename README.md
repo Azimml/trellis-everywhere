@@ -27,11 +27,13 @@ The K=2 trellis quantizer hits **MSE 0.0739** on unit-Gaussian weights vs. the Q
 
 Three model scales run a **full forward pass through the exact shipping WGSL shaders**, verified end-to-end and generating coherent, factually-correct text:
 
-| Model | Layers | 3-bit weights | Runs in-browser on | Output on "The capital of France is" |
+| Model | Layers | 3-bit weights | Peak VRAM (measured, Chrome / RTX 3050 Ti) | Output on "The capital of France is" |
 |---|---|---|---|---|
-| **Qwen3-8B** | 36 | 2.9 GB | **4 GB GPU** (RTX 3050 Ti) | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin."* |
-| **Qwen3-1.7B** | 28 | 0.63 GB | 4 GB GPU | *"…Paris. Is this statement true or false?"* |
-| **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU | coherent short completions |
+| **Qwen3-8B** | 36 | 2.9 GB | **fits 4 GB** | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin."* |
+| **Qwen3-1.7B** | 28 | 0.63 GB | **~1.0 GB** | *"…Paris. Is this statement true or false?"* |
+| **SmolLM2-135M** | 30 | 154 MB | small | coherent short completions |
+
+(Peak VRAM measured on a laptop RTX 3050 Ti in Chrome with a 256-token KV cache. The 8B's app-allocated buffers total 2.96 GB and the full generation fits inside the 4 GB card; the 1.7B peaks at ~1.0 GB.)
 
 Verified at four independent levels:
 
