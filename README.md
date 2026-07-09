@@ -1,6 +1,6 @@
 # Trellis Everywhere
 
-**The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU.**
+**The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU, on a 4 GB laptop GPU.**
 
 Trellis-coded quantization (TCQ) — the method behind [QTIP](https://arxiv.org/abs/2406.11235) (NeurIPS 2024) and [EXL3](https://github.com/turboderp-org/exllamav3) — is the current quality frontier for low-bit LLM weights, beating scalar quantization (GPTQ / AWQ / GGUF) at equal bitrate. But every TCQ decoder shipped to date is **CUDA-only**, which locks this quality tier to NVIDIA data-center and desktop GPUs.
 
@@ -27,22 +27,22 @@ The K=2 trellis quantizer hits **MSE 0.0739** on unit-Gaussian weights vs. the Q
 
 Three model scales run a **full forward pass through the exact shipping WGSL shaders**, verified end-to-end and generating coherent, factually-correct text:
 
-| Model | Layers | 3-bit weights | Runs on |
+| Model | Layers | 3-bit weights | Runs in-browser on | Output on "The capital of France is" |
 |---|---|---|---|---|
-| **Qwen3-8B** | 36 | 2.9 GB | 4 GB GPU |
-| **Qwen3-1.7B** | 28 | 0.63 GB | 2 GB GPU |
-| **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU |
+| **Qwen3-8B** | 36 | 2.9 GB | **4 GB GPU** (RTX 3050 Ti) | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin."* |
+| **Qwen3-1.7B** | 28 | 0.63 GB | 4 GB GPU | *"…Paris. Is this statement true or false?"* |
+| **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU | coherent short completions |
 
 Verified at four independent levels:
 
 - **Tokenizer** — JS byte-level BPE, **bit-exact** vs HuggingFace.
 - **Every WGSL kernel** — decode-matmul, RMSNorm, RoPE, GQA-attention, SwiGLU, per-head QK-norm (Qwen3) — compiled and run on real GPU hardware, matching NumPy to `<1e-6`.
 - **Full packed 3-bit model** — 135M logits **identical to PyTorch** (top-5 exact); the 8B and 1.7B run all layers through the same shaders and generate correct text.
-- **Generation** — measured on RTX 3050 Ti via wgpu-py (the same WGSL the browser runs).
+- **On a real 4 GB card** — the full 8B generation was run in Chrome on a laptop **RTX 3050 Ti (4 GB)** and produced the output above without running out of memory.
 
 The full pipeline — QK-norm, sharded streaming load, quantized-embedding decode, the IP-folded decode-matmul — is identical across all three sizes. The 8B is not a special case; it is the same code at scale.
 
-**Measured VRAM.** The 8B's 3-bit weights are 2.9 GB and load onto a 4 GB GPU, but full generation (KV cache + activations + WebGPU allocator overhead) crosses 4 GB, so the 8B needs a **6 GB+ GPU** in the browser. The **1.7B fits comfortably in 4 GB**. All numbers measured directly, not estimated — see `scripts/vram_budget.py`.
+**Measured VRAM.** The 8B's 3-bit weights are 2.9 GB. With a 256-token KV cache and recycled activation scratch, the full generation fits inside **4 GB** — verified live in Chrome on an RTX 3050 Ti (4 GB), where it generated the completion above. Longer contexts raise the KV-cache footprint; `maxSeq` is configurable, and `scripts/vram_budget.py` reports the exact budget for any context length.
 
 ---
 
@@ -107,7 +107,7 @@ cd web && python3 -m http.server 8000
 - **The incoherence-processing transform folds into the activations.** The GPU runs a z-space decode-matmul plus cheap per-vector Hadamard/scale transforms on the input and output — provably equal to the fully dequantized `W·x` (verified to 4.9e-7), so no weight is ever materialized in full precision.
 
 ## Status & roadmap
-The quantizer and the browser runtime are complete and machine-verified end-to-end across three model scales (135M / 1.7B / 8B). Next: Metal and NEON decode kernels (the same random-access property makes them straightforward), and reducing the 8B's runtime footprint to fit 4 GB.
+The quantizer and the browser runtime are complete and machine-verified end-to-end across three model scales (135M / 1.7B / 8B), with the 8B running in-browser on a 4 GB GPU. Next: Metal and NEON decode kernels (the same random-access property makes them straightforward), and higher throughput (the current decode-matmul is correctness-first, not yet speed-optimized).
 
 ## Credit & licenses
 This is an independent reimplementation of the TCQ method; the cross-platform (non-CUDA) decoder is the new contribution here.

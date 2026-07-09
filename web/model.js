@@ -5,16 +5,18 @@ import { MATMUL, RMSNORM, ROPE, ATTN, SWIGLU, ADD } from "./kernels.js";
 import { PackedOps } from "./packed.js";
 
 export class TrellisModel {
-  constructor(device, cfg, tensors, { packed = false } = {}) {
+  constructor(device, cfg, tensors, { packed = false, maxSeq = 512 } = {}) {
     this.device = device; this.cfg = cfg; this.T = tensors;
     this.packedOps = packed ? new PackedOps(device) : null;
+    this.maxSeq = maxSeq;
     this.k = {
       matmul: makeKernel(device, MATMUL), rmsnorm: makeKernel(device, RMSNORM),
       rope: makeKernel(device, ROPE), attn: makeKernel(device, ATTN),
       swiglu: makeKernel(device, SWIGLU), add: makeKernel(device, ADD),
     };
-    // KV cache: [max_seq, n_kv*head_dim] for K and V, per layer
-    const c = cfg, maxSeq = 2048;
+    // KV cache: [max_seq, n_kv*head_dim] for K and V, per layer. maxSeq is bounded
+    // to keep VRAM low — 512 tokens is plenty for short prompts and fits a 4 GB GPU.
+    const c = cfg;
     this.kv = [];
     for (let l = 0; l < c.num_layers; l++) {
       this.kv.push({
