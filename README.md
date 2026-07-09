@@ -29,7 +29,7 @@ Three model scales run a **full forward pass through the exact shipping WGSL sha
 
 | Model | Layers | 3-bit weights | Runs on | Output on "The capital of France is" |
 |---|---|---|---|---|
-| **Qwen3-8B** | 36 | 2.9 GB | 6 GB+ GPU | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin…"* |
+| **Qwen3-8B** | 36 | 2.9 GB | 4 GB+ GPU | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin…"* |
 | **Qwen3-1.7B** | 28 | 0.63 GB | 4 GB GPU | *"…Paris. Is this statement true or false?"* |
 | **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU | coherent short completions |
 
@@ -38,7 +38,7 @@ Verified at four independent levels:
 - **Tokenizer** — JS byte-level BPE, **bit-exact** vs HuggingFace.
 - **Every WGSL kernel** — decode-matmul, RMSNorm, RoPE, GQA-attention, SwiGLU, per-head QK-norm (Qwen3) — compiled and run on real GPU hardware, matching NumPy to `<1e-6`.
 - **Full packed 3-bit model** — 135M logits **identical to PyTorch** (top-5 exact); the 8B and 1.7B run all layers through the same shaders and generate correct text.
-- **Generation** — measured on a laptop RTX 3050 Ti via wgpu-py (the same WGSL the browser runs).
+- **Generation** — measured on RTX 3050 Ti via wgpu-py (the same WGSL the browser runs).
 
 The full pipeline — QK-norm, sharded streaming load, quantized-embedding decode, the IP-folded decode-matmul — is identical across all three sizes. The 8B is not a special case; it is the same code at scale.
 
@@ -114,4 +114,3 @@ This is an independent reimplementation of the TCQ method; the cross-platform (n
 
 - **Method:** QTIP — Tseng, Zhao, Hou, Sun, De Sa, Chee (NeurIPS 2024), [paper](https://arxiv.org/abs/2406.11235), [code](https://github.com/Cornell-RelaxML/qtip). EXL3 — turboderp, [exllamav3](https://github.com/turboderp-org/exllamav3).
 - **Base models:** [Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) and [Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B) (Apache-2.0), [SmolLM2-135M](https://huggingface.co/HuggingFaceTB/SmolLM2-135M) (Apache-2.0). The published quantized weights are derivatives distributed under the base models' licenses.
-- This repository's own code is released under the MIT License (see `LICENSE`).
