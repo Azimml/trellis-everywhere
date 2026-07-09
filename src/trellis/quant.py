@@ -1,4 +1,4 @@
-"""Weight quantizers for Trellis Everywhere.
+"""Weight quantizers for Trellis-WebGPU.
 
 Phase 0 ships fake-quant baselines (uniform per-group round-to-nearest) so the
 eval harness has something to measure *today*. These are the numbers the real

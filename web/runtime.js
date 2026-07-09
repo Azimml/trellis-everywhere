@@ -1,4 +1,4 @@
-// Trellis Everywhere — in-browser Llama-style transformer runtime (WebGPU).
+// Trellis-WebGPU — in-browser Llama-style transformer runtime (WebGPU).
 // v1: fp16 weights + WGSL ops (matmul, rmsnorm, rope, attention, swiglu).
 // Every op is verified against PyTorch golden refs (refs.json) before we trust
 // the full forward pass. Same architecture as the 8B, so ops scale up.
