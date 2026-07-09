@@ -237,7 +237,7 @@ def scene3(nchars, alpha, blink):
     fw = int((mx1-mx0)*min(1,vram/4.0))
     if fw>4: rr(d, [mx0, my, mx0+fw, my+16], 8, fill=ACC)
     d.text((mx1+16, my+8), f"VRAM {vram:.1f} / 4.0 GB · fits", font=SANS(14), fill=ACC2, anchor="lm")
-    ctext(d, W//2, 500, "Qwen3-8B · 36 layers · ~3 bits/weight · verified on an RTX 3050 Ti",
+    ctext(d, W//2, 500, "Qwen3-8B · 36 layers · ~3 bits/weight · verified on an RTX 3050",
           SANS(15), DIM)
     brand(d)
     return fade(img, alpha)

@@ -35,18 +35,18 @@ Three model scales run a **full forward pass through the exact shipping WGSL sha
 | **Qwen3-1.7B** | 28 | 0.63 GB | **~1.0 GB** | *"…Paris. Is this statement true or false?"* |
 | **SmolLM2-135M** | 30 | 154 MB | small | coherent short completions |
 
-(Peak VRAM measured on a laptop RTX 3050 Ti in Chrome with a 256-token KV cache. The 8B's app-allocated buffers total 2.96 GB and the full generation fits inside the 4 GB card; the 1.7B peaks at ~1.0 GB.)
+(Peak VRAM measured on an RTX 3050 in Chrome with a 256-token KV cache. The 8B's app-allocated buffers total 2.96 GB and the full generation fits inside the 4 GB card; the 1.7B peaks at ~1.0 GB.)
 
 Verified at four independent levels:
 
 - **Tokenizer** — JS byte-level BPE, **bit-exact** vs HuggingFace.
 - **Every WGSL kernel** — decode-matmul, RMSNorm, RoPE, GQA-attention, SwiGLU, per-head QK-norm (Qwen3) — compiled and run on real GPU hardware, matching NumPy to `<1e-6`.
 - **Full packed 3-bit model** — 135M logits **identical to PyTorch** (top-5 exact); the 8B and 1.7B run all layers through the same shaders and generate correct text.
-- **On a real 4 GB card** — the full 8B generation was run in Chrome on a laptop **RTX 3050** and produced the output above without running out of memory.
+- **On a real 4 GB card** — the full 8B generation was run in Chrome on an **RTX 3050** and produced the output above without running out of memory.
 
 The full pipeline — QK-norm, sharded streaming load, quantized-embedding decode, the IP-folded decode-matmul — is identical across all three sizes. The 8B is not a special case; it is the same code at scale.
 
-**Measured VRAM.** The 8B's 3-bit weights are 2.9 GB. With a 256-token KV cache and recycled activation scratch, the full generation fits inside **4 GB** — verified live in Chrome on an RTX 3050 Ti (4 GB), where it generated the completion above. Longer contexts raise the KV-cache footprint; `maxSeq` is configurable, and `scripts/vram_budget.py` reports the exact budget for any context length.
+**Measured VRAM.** The 8B's 3-bit weights are 2.9 GB. With a 256-token KV cache and recycled activation scratch, the full generation fits inside **4 GB** — verified live in Chrome on an RTX 3050 (4 GB), where it generated the completion above. Longer contexts raise the KV-cache footprint; `maxSeq` is configurable, and `scripts/vram_budget.py` reports the exact budget for any context length.
 
 ---
 
