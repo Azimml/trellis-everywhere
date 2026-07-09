@@ -12,7 +12,7 @@ Pure Pillow, no browser. Output: web/poster.gif (1240x880).
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-W, H = 1240, 880
+W, H = 1240, 780
 OUT = os.path.join(os.path.dirname(__file__), "..", "web", "poster.gif")
 FD = "/usr/share/fonts/truetype/dejavu"
 
@@ -237,10 +237,6 @@ def build_base():
         d.text((x+136, 723), txt, font=BOLD(12.5), fill=tc, anchor="mm")
         x += 289
 
-    # footer
-    d.text((48, 800), "github.com/Azimml/trellis-webgpu", font=BOLD(14), fill=INK, anchor="lm")
-    d.text((1192, 800), "Qwen3-8B · measured on a 4 GB RTX 3050 · numbers, not estimates",
-           font=SANS(12), fill=SUB, anchor="rm")
     return img
 
 # ---------------- dynamic overlays ----------------
