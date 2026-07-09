@@ -27,11 +27,11 @@ The K=2 trellis quantizer hits **MSE 0.0739** on unit-Gaussian weights vs. the Q
 
 Three model scales run a **full forward pass through the exact shipping WGSL shaders**, verified end-to-end and generating coherent, factually-correct text:
 
-| Model | Layers | 3-bit weights | Runs on | Output on "The capital of France is" |
+| Model | Layers | 3-bit weights | Runs on |
 |---|---|---|---|---|
-| **Qwen3-8B** | 36 | 2.9 GB | 4 GB+ GPU | *"…Paris. The capital of Italy is Rome. The capital of Germany is Berlin…"* |
-| **Qwen3-1.7B** | 28 | 0.63 GB | 4 GB GPU | *"…Paris. Is this statement true or false?"* |
-| **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU | coherent short completions |
+| **Qwen3-8B** | 36 | 2.9 GB | 4 GB GPU |
+| **Qwen3-1.7B** | 28 | 0.63 GB | 2 GB GPU |
+| **SmolLM2-135M** | 30 | 154 MB | any WebGPU GPU |
 
 Verified at four independent levels:
 
