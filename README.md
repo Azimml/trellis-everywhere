@@ -2,6 +2,8 @@
 
 **The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU, on a 4 GB GPU.**
 
+![Trellis Everywhere — an 8B trellis-quantized LLM running in a browser on WebGPU](assets/hero.gif)
+
 Trellis-coded quantization (TCQ) — the method behind [QTIP](https://arxiv.org/abs/2406.11235) (NeurIPS 2024) and [EXL3](https://github.com/turboderp-org/exllamav3) — is the current quality frontier for low-bit LLM weights, beating scalar quantization (GPTQ / AWQ / GGUF) at equal bitrate. But every TCQ decoder shipped to date is **CUDA-only**, which locks this quality tier to NVIDIA data-center and desktop GPUs.
 
 This project reimplements the full **encode → decode → inference** pipeline from scratch and ports the decoder to **WebGPU / WGSL** — so a 3-bit trellis-quantized model runs, correctly and verifiably, entirely on the client, with no server and no CUDA. To my knowledge this is the first trellis decoder to run on any non-CUDA target, and the first to run in a browser.
