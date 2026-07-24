@@ -1,5 +1,9 @@
 # Trellis-WebGPU
 
+[![CI](https://github.com/Azimml/trellis-webgpu/actions/workflows/ci.yml/badge.svg)](https://github.com/Azimml/trellis-webgpu/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 **The first trellis-coded LLM quantization decoder that runs outside CUDA — an 8B model executing its full forward pass in a browser tab on WebGPU, on a 4 GB GPU.**
 
 ![Trellis-WebGPU — an 8B trellis-quantized LLM running in a browser on WebGPU](assets/poster.gif)
