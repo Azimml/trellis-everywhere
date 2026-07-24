@@ -27,7 +27,7 @@ def brute_force_best(tr: BitshiftTrellis, w: torch.Tensor, s0: int = 0):
 def test_viterbi_is_optimal():
     torch.manual_seed(0)
     tr = BitshiftTrellis(L=4, k=2, codebook_values=gaussian_codebook(4, seed=1))
-    for trial in range(5):
+    for _trial in range(5):
         w = torch.randn(1, 5)
         bits, dq = tr.encode(w)
         got = ((w - dq) ** 2).sum().item()
