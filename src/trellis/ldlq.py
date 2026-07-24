@@ -15,9 +15,10 @@ Convention: our weights are (n_out, k_in); LDLQ walks the INPUT axis, so we
 operate on Wt = W.T of shape (k, n) and transpose back.
 """
 from __future__ import annotations
+
 import torch
 
-from trellis.qtip import (T_SEQ, _block_had, _fit_block, IPContext, viterbi_tb)
+from trellis.qtip import T_SEQ, IPContext, _block_had, _fit_block, viterbi_tb
 
 
 def regularize_H(H: torch.Tensor, sigma_reg: float = 0.025) -> torch.Tensor:

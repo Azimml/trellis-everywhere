@@ -5,10 +5,17 @@ import sys
 import torch
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-from trellis import qtip  # noqa: E402
 from trellis.qtip import (  # noqa: E402
-    L, S, T_SEQ, cb_1mad, codebook_lut, decode_recursive, decode_window,
-    viterbi_tb, tcq_quantize_weight, IPContext, _block_had,
+    T_SEQ,
+    IPContext,
+    L,
+    S,
+    cb_1mad,
+    codebook_lut,
+    decode_recursive,
+    decode_window,
+    tcq_quantize_weight,
+    viterbi_tb,
 )
 from trellis.quant import _uniform_group_fakequant  # noqa: E402
 

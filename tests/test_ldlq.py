@@ -5,8 +5,8 @@ import sys
 import torch
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+from trellis.ldlq import block_ldl, regularize_H, tcq_quantize_weight_ldlq  # noqa: E402
 from trellis.qtip import codebook_lut, tcq_quantize_weight  # noqa: E402
-from trellis.ldlq import (block_ldl, regularize_H, tcq_quantize_weight_ldlq)  # noqa: E402
 
 
 def test_block_ldl_identity():

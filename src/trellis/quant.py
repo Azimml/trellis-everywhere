@@ -12,6 +12,7 @@ The real (sequential + block-parallel) trellis quantizer lands in trellis.py
 once the faithful QTIP/EXL3 spec is extracted; both will implement `Quantizer`.
 """
 from __future__ import annotations
+
 import torch
 import torch.nn as nn
 

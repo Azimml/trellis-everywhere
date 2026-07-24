@@ -33,6 +33,7 @@ Conventions
   length T). Viterbi is fully vectorized over n and over states.
 """
 from __future__ import annotations
+
 import torch
 
 

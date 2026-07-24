@@ -6,6 +6,7 @@ comparing weight-quantization schemes. Same code path runs a 135M model on a
 change. This is the ruler the Phase-1 quality gate is measured against.
 """
 from __future__ import annotations
+
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
