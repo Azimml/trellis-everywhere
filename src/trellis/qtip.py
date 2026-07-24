@@ -14,6 +14,7 @@ Key facts this module implements exactly:
   EXL3's Hessian-free fallback mode == QTIP paper Table 3 "no fine-tune" regime.)
 """
 from __future__ import annotations
+
 import torch
 
 MASK32 = 0xFFFFFFFF
@@ -97,11 +98,9 @@ def decode_window(bits: torch.Tensor, K: int, lut: torch.Tensor,
         idx = torch.arange(T, device=dev) - (steps_needed - 1 - j)
         valid = idx >= 0
         sym = torch.where(valid.unsqueeze(0), b[:, idx.clamp(min=0)], torch.zeros_like(b[:, :1]))
-        # positions before the stream start draw their bits from s0's window
+        # positions before the stream start draw their bits from s0's window;
+        # that seed contribution is applied in the (s0 != 0) recursion pass below.
         state = ((state << K) | sym) & (S - 1)
-        if not valid.all():
-            # seed contribution for early positions: shift s0 into the window
-            pass
     if (s0 != 0).any():
         # early positions whose window extends before t=0 need s0 bits: recompute
         # them with the recursion (cheap: only first ceil(L/K)-1 positions).
@@ -291,9 +290,12 @@ def tcq_quantize_weight(w: torch.Tensor, K: int, lut: torch.Tensor,
     use_triton = backend == "triton" or (backend == "auto" and w.is_cuda)
     if use_triton:
         from trellis.viterbi_triton import viterbi_tb_triton
-        enc = lambda t: viterbi_tb_triton(t, K, lut)[1]
+
+        def enc(t):
+            return viterbi_tb_triton(t, K, lut)[1]
     else:
-        enc = lambda t: viterbi_tb(t, K, lut, dp_dtype=dp_dtype)[1]
+        def enc(t):
+            return viterbi_tb(t, K, lut, dp_dtype=dp_dtype)[1]
 
     out = torch.empty_like(tiles)
     for i in range(0, tiles.shape[0], tile_batch):

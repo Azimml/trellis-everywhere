@@ -1,5 +1,6 @@
 // Full Llama-style forward pass in WebGPU, chaining the verified kernels.
-// Verified by matching PyTorch top-5 next-token logits (run.html).
+// Verified by matching PyTorch top-5 next-token logits
+// (scripts/run_packed_headless.py runs these exact kernels via wgpu-py).
 import { makeKernel, f32buf, readF32 } from "./runtime.js";
 import { MATMUL, RMSNORM, ROPE, ATTN, SWIGLU, ADD } from "./kernels.js";
 import { PackedOps } from "./packed.js";
@@ -123,14 +124,6 @@ export class TrellisModel {
     const x = f32buf(dev, H);
     this._dispatch(enc, pipe, [this._uni([tokenId, H]), emb.buffer, x], H);
     return x;
-  }
-
-  async _cacheWrite(l, pos, kBuf, vBuf) {
-    const stride = this.cfg.n_kv_heads * this.cfg.head_dim;
-    const enc = this.device.createCommandEncoder();
-    enc.copyBufferToBuffer(kBuf, 0, this.kv[l].K, pos * stride * 4, stride * 4);
-    enc.copyBufferToBuffer(vBuf, 0, this.kv[l].V, pos * stride * 4, stride * 4);
-    this.device.queue.submit([enc.finish()]);
   }
 
   reset() { this.pos = 0; }
