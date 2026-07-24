@@ -1,0 +1,18 @@
+# Core runtime — the quantizer and evaluation harness.
+torch>=2.1
+numpy>=1.24
+
+# Perplexity evaluation + tokenizer (scripts/run_tcq_eval.py, eval.py).
+transformers>=4.40
+datasets>=2.18
+tokenizers>=0.15
+
+# Headless WebGPU verification — runs the exact shipping WGSL on your GPU
+# via wgpu-py (scripts/run_packed_headless.py, validate_*.py).
+wgpu>=0.15
+
+# Poster/GIF generation (scripts/make_poster_gif.py).
+pillow>=10.0
+
+# Optional, CUDA-only: the fused Viterbi encode kernel (src/trellis/viterbi_triton.py).
+# Install separately on a CUDA box:  pip install triton

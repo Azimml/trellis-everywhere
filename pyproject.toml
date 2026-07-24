@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trellis-webgpu"
+version = "0.1.0"
+description = "Trellis-coded (TCQ) LLM quantization with a cross-platform WebGPU decoder — the method behind QTIP/EXL3, running outside CUDA."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Azimbek Olimbekov" }]
+keywords = ["llm", "quantization", "webgpu", "trellis-coded-quantization", "qtip", "inference"]
+dependencies = [
+    "torch>=2.1",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+# Perplexity evaluation + browser export.
+eval = ["transformers>=4.40", "datasets>=2.18", "tokenizers>=0.15", "wgpu>=0.15", "pillow>=10.0"]
+# Test + lint tooling.
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.urls]
+Repository = "https://github.com/Azimml/trellis-webgpu"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# The CPU-only unit tests live in tests/. The CUDA Triton test is opt-in
+# behind the `cuda` marker so a CPU CI runner collects a green suite.
+testpaths = ["tests"]
+addopts = "-ra -q -m 'not cuda'"
+markers = [
+    "cuda: test requires an NVIDIA GPU with CUDA + Triton (skipped on CPU CI)",
+]
+
+[tool.ruff]
+# The quantizer is dense, math-heavy code; keep line length generous and
+# lint for real problems rather than style bikeshedding.
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    "E741",  # ambiguous variable names (l, L, S) are the paper's notation here
+    "E501",  # long lines in math-dense kernels are clearer unwrapped
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]     # sys.path insert before imports is intentional in tests
+"scripts/*" = ["E402"]
